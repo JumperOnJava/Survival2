@@ -15,15 +15,17 @@ namespace Survival
         [STAThread]
         static void Main()
         {
-            using (GameDBContext context = new GameDBContext())
-            {
-                User user = new User();
-                user.Name = "Test";
-                user.Password = "password";
-                user.Score = 5;
-                context.User.Add(user);
-                context.SaveChanges();
-            }
+            /*
+             *using (GameDBContext context = new GameDBContext())
+               {
+                   User user = new User();
+                   user.Name = "Test";
+                   user.Password = "password";
+                   user.Score = 5;
+                   context.User.Add(user);
+                   context.SaveChanges();
+               }
+             */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form2());

@@ -10,6 +10,9 @@ using Survival.Models;
 using Survival.Controllers;
 using System.Runtime.InteropServices;
 using System.Numerics;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using WindowsFormsApp1.Util;
+using WindowsFormsApp1.Entites;
 
 
 namespace Survival
@@ -18,14 +21,9 @@ namespace Survival
     {
         Random rnd = new Random();
         public bool gameOver = false;
-        public Image playerSheet;
-        public Image slimeSheet;
-        public Image dwarfSheet;
-        public Player player;
+        public static Player player;
         //public Monster monster;
-        public Slime slime;
-        public Dwarf dwarf;
-        public List<Monster> monsters = new List<Monster>();
+        public List<Entity> entities = new List<Entity>();
 
         public int spawnTimer = 0;
         public int spawnTimerDead = 0;
@@ -33,13 +31,16 @@ namespace Survival
         public int deadInterval = 10000;
         // public int interval = 5000;
 
-        static float TargetFrameRate = 60;
+        static float TargetFrameRate = 1000;
         
         public Form1(Form2 f)
         {
-            AllocConsole();
             InitializeComponent();
 
+            foreach (Keys keys in Enum.GetValues(typeof(Keys)))
+            {
+                PressedKeys[keys] = false;
+            }
 
             timerMovement.Interval = (int)(1000/TargetFrameRate);
             timerMovement.Tick += (DeltaUpdate);
@@ -57,22 +58,19 @@ namespace Survival
             Init();
 
         }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
         private void DeadMonsterTick(object sender, EventArgs e)
         {
             spawnTimerDead += 1000; // Додаємо 1 секунду до таймера монстрів
             if (spawnTimerDead >= deadInterval)
             {
-                for (int i = 0; i < monsters.Count; i++)
+                for (int i = 0; i < entities.Count; i++)
                 {
-                    Monster monster = monsters[i];
+                    if(entities.GetType() != typeof(Monster))
+                        continue;
+                    Monster monster = (Monster)entities[i];
                     if (monster != null && monster.isDead)
                     {
-                        monsters[i] = null;
-
+                        entities[i] = null;
                     }
                 }
 
@@ -95,75 +93,19 @@ namespace Survival
             int x = rnd.Next(0, this.Width); // Випадкова координата X в межах ширини форми
             int y = rnd.Next(0, this.Height); // Випадкова координата Y в межах висоти форми
 
-            Monster monster = new Monster(new Vector2(x, y), Hero.runFrames, Hero.idleFrames, Hero.attackFrames, Hero.hitFrames, Hero.deathFrames, 128, 100, playerSheet);
-            monsters.Add(monster);
+            Monster monster = new PlayerSpriteMonster(new Vector2(x, y));
+            entities.Add(monster);
         }
 
-        private void LeftMouseButton(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                switch (player.direction)
-                {
-                    case 0:
-                        player.SetAnimationConfiguration(9);
-                        break;
-                    case 1:
-                        player.SetAnimationConfiguration(8);
-                        break;
-                    case 2:
-                        player.SetAnimationConfiguration(11);
-                        break;
-                    case 3:
-                        player.SetAnimationConfiguration(10);
-                        break;
-                }
-            }
-        }
-        Dictionary<Keys,bool> keys = new Dictionary<Keys,bool>();
+        public static Dictionary<Keys,bool> PressedKeys = new Dictionary<Keys,bool>();
         private void FreeKeyboard(object sender, KeyEventArgs e)
         {
-            keys[e.KeyCode] = false;
-            /*
-            player.dir = new Vector2();
-            player.isMoving = false;
-            switch (e.KeyCode)
-            {
-                case Keys.W:
-                    player.SetAnimationConfiguration(5);
-                    break;
-                case Keys.S:
-                    player.SetAnimationConfiguration(4);
-                    break;
-                case Keys.D:
-                    player.SetAnimationConfiguration(6);
-                    break;
-                case Keys.A:
-                    player.SetAnimationConfiguration(7);
-                    break;
-                case Keys.Space:
-                    switch (player.direction)
-                    {
-                        case 0:
-                            player.SetAnimationConfiguration(5);
-                            break;
-                        case 1:
-                            player.SetAnimationConfiguration(4);
-                            break;
-                        case 2:
-                            player.SetAnimationConfiguration(6);
-                            break;
-                        case 3:
-                            player.SetAnimationConfiguration(7);
-                            break;
-                    }
-                    break;
-            }*/
+            PressedKeys[e.KeyCode] = false;
         }
 
         private void Keyboard(object sender, KeyEventArgs e)
         {
-            keys[e.KeyCode]=true;
+            PressedKeys[e.KeyCode]=true;
             /*
             switch (e.KeyCode)
             {
@@ -236,74 +178,16 @@ namespace Survival
         {
             Watch.Stop();
             deltaTime = Watch.ElapsedMilliseconds / 1000f;
-            Update();
+            Tick();
             Watch.Restart();
         }
 
-        private void Update()
+        public void Tick()
         {
-            /*
-            if (player.isMoving)
+            foreach (var entity in entities)
             {
-                player.Move();
-            }*/
-
-            Vector2 playerMovement = new Vector2(
-                (keys.TryGetValue(Keys.D,out _) && keys[Keys.D] ? 0 : -1) +
-                (keys.TryGetValue(Keys.A,out _) && keys[Keys.A] ? 0 : 1),
-
-                (keys.TryGetValue(Keys.W, out _) && keys[Keys.W] ? 0 : 1) +
-                (keys.TryGetValue(Keys.S, out _) && keys[Keys.S] ? 0 : -1)
-                );
-            playerMovement /= playerMovement.Length();
-            player.InputMove(playerMovement);
-            player.AttackCooldown -= 0.07f;
-            
-            /*
-            if (monsters.Count > 1) {
-                foreach (Monster monster in monsters) // Перебираємо копію списку монстрів
-                {
-                    if (monster != null)
-                    {
-                        if (monster.isMoving)
-                        {
-                            monster.UpdateMonsterMovement(player);
-                            monster.DetermineMonsterAnimation(player);
-                        }
-
-                        monster.MonsterAttack(player);
-                        Control(monster, player);
-
-
-                    }
-                }
+                entity.Update();
             }
-        */
-
-            for (int i = 0; i < monsters.Count; i++)
-            {
-                Monster monster = monsters[i];
-                if (monster != null)
-                {
-                    if (monster.isMoving)
-                    {
-                        monster.UpdateMonsterMovement(player,deltaTime);
-                        monster.DetermineMonsterAnimation(player);
-                    }
-
-                    monster.MonsterAttack(player);
-
-
-                }
-                Control(monster, player);
-            }
-
-
-
-
-            slime.UpdateMonsterMovement(player,deltaTime);
-            slime.DetermineMonsterAnimation(player);
-
             Invalidate();
         }
 
@@ -319,35 +203,9 @@ namespace Survival
 
             if (monster != null)
             {
-                if (monster.health <= 0)
-                {
-
-                    monster.isMoving = false;
-                    monster.dir.X = 0;
-                    monster.dir.Y = 0;
-                    monster.SetAnimationConfiguration(16);
-
-                    monster.isDead = true;
-                    //timerDeadMonster.Start();
-                    //monsters.Remove(monster);
-                    //MonsterDies();
-                    //corpses.Add((monster, DateTime.Now));
-                    //monsters.Remove(monster); // Видалити монстра зі списку
-                    //timerDeleteMonster.Start(); // Запустіть таймер для видалення монстра
-                    //corpses.Add((monster, DateTime.Now));
-                    //timerDeleteMonster.Start(); // Запустіть таймер для видалення монстра
-                }
-                else
-                {
-                    monster.isMoving = true;
-                }
+                
             }
-
-
-
         }
-
-
         public void Init()
         {
             MapController.Init();
@@ -355,22 +213,13 @@ namespace Survival
             this.Width = MapController.GetWidth();
             this.Height = MapController.GetHeight();
 
-            playerSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(), "Sprites\\player.png"));
-            slimeSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(), "Sprites\\slime.png"));
-            dwarfSheet = new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(), "Sprites\\dwarf.png"));
-
-
-            player = new Player(new Vector2(10, 10), Hero.runFrames, Hero.idleFrames, Hero.attackFrames, Hero.hitFrames, Hero.deathFrames, 128, 100, playerSheet);
-
-
+            player = new Player(new Vector2(10, 10));
+            entities.Add(player);
             //monster = new Monster(150, 150, Hero.runFrames, Hero.idleFrames, Hero.attackFrames, Hero.hitFrames, Hero.deathFrames, 128, 100, playerSheet);
 
+            entities.Add(new Slime(new Vector2(100, 100)));
 
-            slime = new Slime(new Vector2(100, 100), SlimeMonster.runFrames, SlimeMonster.idleFrames, SlimeMonster.attackFrames, SlimeMonster.hitFrames, SlimeMonster.deathFrames, 64, 100, slimeSheet);
-
-
-            dwarf = new Dwarf(new Vector2(300,300), SlimeMonster.runFrames, SlimeMonster.idleFrames, SlimeMonster.attackFrames, SlimeMonster.hitFrames, SlimeMonster.deathFrames, 64, 100, dwarfSheet);
-
+            entities.Add(new Dwarf(new Vector2(300,300)));
 
             timerMovement.Start();
 
@@ -382,32 +231,11 @@ namespace Survival
         {
             Graphics g = e.Graphics;
             MapController.DrawMap(g);
-            slime.PlayAnimation(g);
-            dwarf.PlayAnimation(g);
-
-            /*
-            foreach (Monster monster in monsters)
+            foreach(Entity entity in entities)
             {
-                if (monster != null)
-                    monster.PlayAnimation(g);
+                entity.Draw(g);
             }
-            */
-
-            for (int i = 0; i < monsters.Count; i++)
-            {
-                Monster monster = monsters[i];
-                if (monster != null)
-                {
-                    monster.PlayAnimation(g);
-                }
-            }
-
-            player.PlayAnimation(g);
-
         }
-
-        
-
         private void labelPause_Click(object sender, EventArgs e)
         {
             timerMovement.Stop();
@@ -427,13 +255,14 @@ namespace Survival
             labelNoPause.Visible = false;
             labelExit.Visible = false;
         }
-
         private void labelExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-   
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
+        }
     }
 }

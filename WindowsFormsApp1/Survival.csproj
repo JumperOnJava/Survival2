@@ -7,7 +7,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EB9280FE-0439-443F-810F-E5E054AD47E6}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>WindowsFormsApp1</RootNamespace>
     <AssemblyName>WindowsFormsApp1</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -35,6 +35,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -170,10 +173,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="Engine\Scene.cs" />
     <Compile Include="Entites\Dwarf.cs" />
     <Compile Include="Entites\Entity.cs" />
     <Compile Include="Entites\Monster.cs" />
     <Compile Include="Entites\Player.cs" />
+    <Compile Include="Entites\PlayerSpriteMonster.cs" />
     <Compile Include="Entites\Slime.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

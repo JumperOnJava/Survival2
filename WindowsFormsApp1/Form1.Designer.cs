@@ -42,9 +42,10 @@
             // 
             this.labelPause.BackColor = System.Drawing.Color.Maroon;
             this.labelPause.Font = new System.Drawing.Font("Comic Sans MS", 18F, System.Drawing.FontStyle.Bold);
-            this.labelPause.Location = new System.Drawing.Point(660, 9);
+            this.labelPause.Location = new System.Drawing.Point(495, 7);
+            this.labelPause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelPause.Name = "labelPause";
-            this.labelPause.Size = new System.Drawing.Size(167, 50);
+            this.labelPause.Size = new System.Drawing.Size(125, 41);
             this.labelPause.TabIndex = 1;
             this.labelPause.Text = "Pause";
             this.labelPause.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -56,9 +57,10 @@
             this.labelNoPause.BackColor = System.Drawing.Color.Maroon;
             this.labelNoPause.Font = new System.Drawing.Font("Comic Sans MS", 18F, System.Drawing.FontStyle.Bold);
             this.labelNoPause.Image = ((System.Drawing.Image)(resources.GetObject("labelNoPause.Image")));
-            this.labelNoPause.Location = new System.Drawing.Point(301, 144);
+            this.labelNoPause.Location = new System.Drawing.Point(226, 117);
+            this.labelNoPause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelNoPause.Name = "labelNoPause";
-            this.labelNoPause.Size = new System.Drawing.Size(242, 52);
+            this.labelNoPause.Size = new System.Drawing.Size(182, 42);
             this.labelNoPause.TabIndex = 2;
             this.labelNoPause.Text = "Go ";
             this.labelNoPause.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -72,9 +74,10 @@
             this.labelExit.Font = new System.Drawing.Font("Comic Sans MS", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelExit.ForeColor = System.Drawing.Color.Black;
             this.labelExit.Image = ((System.Drawing.Image)(resources.GetObject("labelExit.Image")));
-            this.labelExit.Location = new System.Drawing.Point(301, 215);
+            this.labelExit.Location = new System.Drawing.Point(226, 175);
+            this.labelExit.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelExit.Name = "labelExit";
-            this.labelExit.Size = new System.Drawing.Size(241, 52);
+            this.labelExit.Size = new System.Drawing.Size(181, 42);
             this.labelExit.TabIndex = 5;
             this.labelExit.Text = "Exit ";
             this.labelExit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -83,19 +86,21 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(852, 778);
+            this.ClientSize = new System.Drawing.Size(640, 639);
             this.Controls.Add(this.labelExit);
             this.Controls.Add(this.labelNoPause);
             this.Controls.Add(this.labelPause);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(870, 825);
-            this.MinimumSize = new System.Drawing.Size(870, 825);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MaximumSize = new System.Drawing.Size(656, 678);
+            this.MinimumSize = new System.Drawing.Size(656, 678);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ratopia";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
             this.ResumeLayout(false);
 

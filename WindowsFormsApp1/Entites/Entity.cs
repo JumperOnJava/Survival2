@@ -10,12 +10,13 @@ namespace Survival.Entites
 {
     public abstract class Entity
     {
-        public Vector2 pos;
-        public Vector2 dir;
+        public Vector2 pos = Vector2.Zero;
         public abstract float hitboxSize { get; }
         public bool isMoving { get; set; }
         public int direction;
         public int health;
+
+        public int speed;
 
         public int currentAnimation;
         public int currentFrame;
@@ -29,9 +30,10 @@ namespace Survival.Entites
 
         public int spriteSize;
 
+
         public Image spriteSheet;
 
-        public Entity(Vector2 pos, int runFrames, int idleFrames, int attackFrames, int hitFrames, int deathFrames, int size, int health, Image spriteSheet)
+        public Entity(Vector2 pos, int runFrames, int idleFrames, int attackFrames, int hitFrames, int deathFrames, int spriteSize, int health, int speed, Image spriteSheet)
         {
             this.pos = pos;
             this.runFrames = runFrames;
@@ -40,7 +42,8 @@ namespace Survival.Entites
             this.hitFrames = hitFrames;
             this.deathFrames = deathFrames;
             this.spriteSheet = spriteSheet;
-            this.spriteSize = size;
+            this.spriteSize = spriteSize;
+            this.speed = speed;
             currentLimit = idleFrames;
             this.health = health;
         }
@@ -49,16 +52,19 @@ namespace Survival.Entites
         public virtual void InputMove(Vector2 movement)
         {
             isMoving = movement.Length() != 0;
-            pos += movement;
+            pos += movement * Form1.deltaTime * speed;
         }
 
 
-        public virtual void PlayAnimation(Graphics g)
+        public virtual void Draw(Graphics g)
         {
             if (currentFrame < currentLimit - 1)
                 currentFrame++;
             else currentFrame = 0;
-            g.DrawImage(spriteSheet, new Rectangle(new Point((int)pos.X, (int)pos.Y), new Size(spriteSize, spriteSize)), spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
+            var rect = new Rectangle(new Point((int)pos.X, (int)pos.Y), new Size(spriteSize, spriteSize));
+            var spriteFrame = spriteSize * currentFrame;
+            var spriteAnimation = spriteSize * currentAnimation;
+            g.DrawImage(spriteSheet, rect, spriteFrame, spriteAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
         }
    
 
@@ -78,5 +84,7 @@ namespace Survival.Entites
         }
 
         public abstract void SetAnimationConfiguration(int currentAnimation);
+
+        public abstract void Update();
     }
 }

@@ -19,7 +19,9 @@ namespace Survival.Entites
         public int speed;
 
         public int currentAnimation;
-        public int currentFrame;
+        public float frameDuration = 1/12f;
+        public float currentAnimationDuration;
+        public int currentAnimationFrame => (int)(currentAnimationDuration / frameDuration);
         public int currentLimit;
 
         public int runFrames;
@@ -29,7 +31,6 @@ namespace Survival.Entites
         public int deathFrames;
 
         public int spriteSize;
-
 
         public Image spriteSheet;
 
@@ -58,11 +59,11 @@ namespace Survival.Entites
 
         public virtual void Draw(Graphics g)
         {
-            if (currentFrame < currentLimit - 1)
-                currentFrame++;
-            else currentFrame = 0;
+            if (currentAnimationFrame < currentLimit - 1)
+                currentAnimationDuration+=Form1.deltaTime;
+            else currentAnimationDuration = 0;
             var rect = new Rectangle(new Point((int)pos.X, (int)pos.Y), new Size(spriteSize, spriteSize));
-            var spriteFrame = spriteSize * currentFrame;
+            var spriteFrame = spriteSize * currentAnimationFrame;
             var spriteAnimation = spriteSize * currentAnimation;
             g.DrawImage(spriteSheet, rect, spriteFrame, spriteAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
         }

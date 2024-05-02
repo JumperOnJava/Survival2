@@ -222,10 +222,7 @@ namespace Survival
             entities.Add(new Dwarf(new Vector2(300,300)));
 
             timerMovement.Start();
-
-
         }
-
 
         public void OnPaint(object sender, PaintEventArgs e)
         {

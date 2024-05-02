@@ -30,20 +30,20 @@ namespace Survival.Entites
         {
             if (!isDead)
             {
-                if (currentFrame < currentLimit - 1)
-                    currentFrame++;
+                if (currentAnimationFrame < currentLimit - 1)
+                    currentAnimationDuration+=Form1.deltaTime;
                 else
                 {
                     if (currentAnimation == 16)
                         isDead = true;
                     else
-                        currentFrame = 0;
+                        currentAnimationDuration = 0;
                 }
             }
-            g.DrawImage(spriteSheet, new Rectangle(new Point((int)pos.X, (int)pos.Y), new Size(spriteSize, spriteSize)), spriteSize * currentFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
+            if(this.GetType() == typeof(Slime))
+                Console.WriteLine($"{currentAnimationFrame}, {currentAnimationDuration}");
+            g.DrawImage(spriteSheet, new Rectangle(new Point((int)pos.X, (int)pos.Y), new Size(spriteSize, spriteSize)), spriteSize * currentAnimationFrame, spriteSize * currentAnimation, spriteSize, spriteSize, GraphicsUnit.Pixel);
         }
-
-        
 
         public override void Update()
         {

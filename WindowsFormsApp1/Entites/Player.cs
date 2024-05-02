@@ -24,7 +24,7 @@ namespace Survival.Entites
             : base(pos, Hero.runFrames, Hero.idleFrames, Hero.attackFrames, Hero.hitFrames, Hero.deathFrames, 128, 100, 200, new Bitmap(Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName.ToString(), "Sprites\\player.png")))
         {
             currentAnimation = 4;
-            currentFrame = 0;
+            currentAnimationDuration = 0;
             countKill = 0;
         }
 
@@ -35,7 +35,7 @@ namespace Survival.Entites
             if (this.IntersectsWith(monster) && monster.health > 0)
             {
                 monster.isMoving = false;
-                //monster.health -= 20;
+                monster.health -= 20;
                 monster.SetAnimationConfiguration(12);
             }
         }
@@ -99,8 +99,7 @@ namespace Survival.Entites
 
         private void UpdateAnimation()
         {
-            float angle = (float)((float)Math.Atan2(dir.Y, dir.X)*(180/Math.PI));
-            Console.WriteLine((int)(angle/90));
+            float angle = (float)(Math.Atan2(dir.Y, dir.X)*(180/Math.PI));
             switch (angle / 90)
             {
                 case -1:
